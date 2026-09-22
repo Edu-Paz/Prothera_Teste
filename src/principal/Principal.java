@@ -4,6 +4,7 @@ import entities.Funcionario;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +25,12 @@ public class Principal {
 
         funcionarios.removeIf(funcionario -> funcionario.getNome().equals("João"));
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         for (Funcionario funcionario : funcionarios) {
             System.out.println(
                     "Nome: " + funcionario.getNome()
-                            + " | Data: " + funcionario.getDataNascimento()
+                            + " | Data: " + funcionario.getDataNascimento().format(formatter)
                             + " | Salário: " + funcionario.getSalario()
                             + " | Função: " + funcionario.getFuncao()
             );
