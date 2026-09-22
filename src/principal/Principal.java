@@ -3,13 +3,11 @@ package principal;
 import entities.Funcionario;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Principal {
     public static void main(String[] args) {
@@ -26,6 +24,8 @@ public class Principal {
         aumentarSalario(funcionarios);
 
         imprimirFuncionarios(funcionarios);
+
+        imprimirPorFuncao(agruparPorFuncao(funcionarios));
 
     }
 
@@ -49,22 +49,10 @@ public class Principal {
     }
 
     public static void imprimirFuncionarios(List<Funcionario> funcionarios) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.forLanguageTag("pt-BR"));
-        symbols.setDecimalSeparator(',');
-        symbols.setGroupingSeparator('.');
-
-        DecimalFormat df = new DecimalFormat("#,##0.00", symbols);
-
         System.out.println("Lista de funcionários:");
 
         for (Funcionario funcionario : funcionarios) {
-            System.out.println(
-                    "Nome: " + funcionario.getNome()
-                            + " | Data: " + funcionario.getDataNascimento().format(formatter)
-                            + " | Salário: R$ " + df.format(funcionario.getSalario())
-                            + " | Função: " + funcionario.getFuncao()
-            );
+            System.out.println(funcionario);
         }
 
         System.out.println("***FIM***");
@@ -74,6 +62,21 @@ public class Principal {
     public static void aumentarSalario(List<Funcionario> funcionarios){
         for (Funcionario funcionario : funcionarios) {
             funcionario.aumentarSalario(new BigDecimal("0.10"));
+        }
+    }
+
+    public static Map<String, List<Funcionario>> agruparPorFuncao(List<Funcionario> funcionarios){
+        return funcionarios.stream()
+                .collect(Collectors.groupingBy(Funcionario::getFuncao));
+    }
+
+    public static void imprimirPorFuncao(Map<String, List<Funcionario>> grupos){
+        for (Map.Entry<String, List<Funcionario>> entry : grupos.entrySet()) {
+            System.out.println("Função: " + entry.getKey());
+            for (Funcionario funcionario : entry.getValue()) {
+                System.out.println(funcionario);
+            }
+            System.out.println();
         }
     }
 }
