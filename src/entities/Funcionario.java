@@ -32,4 +32,13 @@ public class Funcionario extends Pessoa{
     public void setFuncao(String funcao) {
         this.funcao = funcao;
     }
+
+    public void aumentarSalario(BigDecimal percentual){
+        if (percentual == null || percentual.compareTo(BigDecimal.ZERO) < 0) {
+            return;
+        }
+
+        BigDecimal fator = BigDecimal.ONE.add(percentual);
+        setSalario(getSalario().multiply(fator));
+    }
 }
