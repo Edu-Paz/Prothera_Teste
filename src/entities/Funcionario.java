@@ -55,7 +55,7 @@ public class Funcionario extends Pessoa{
         DecimalFormat salaryFormatter = new DecimalFormat("#,##0.00", symbols);
 
         return "Nome: " + getNome()
-                + " | Data: " + getDataNascimento().format(dateFormatter)
+                + " | Data de nascimento: " + getDataNascimento().format(dateFormatter)
                 + " | Salário: R$ " + salaryFormatter.format(getSalario())
                 + " | Função: " + getFuncao();
     }
