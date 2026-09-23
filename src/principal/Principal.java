@@ -4,14 +4,13 @@ import entities.Funcionario;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -55,13 +54,13 @@ public class Principal {
         funcionarios.add(new Funcionario("Heloísa", LocalDate.of(2003, 5, 24), new BigDecimal("1606.85"), "Eletricista"));
         funcionarios.add(new Funcionario("Helena", LocalDate.of(1996, 9, 2), new BigDecimal("2799.93"), "Gerente"));
 
-        System.out.println("Funcionários inseridos com sucesso");
+        System.out.println("Funcionários inseridos com sucesso!\n");
     }
 
     public static void removerFuncionario(List<Funcionario> funcionarios, String nome) {
         funcionarios.removeIf(funcionario -> funcionario.getNome().equals(nome));
 
-        System.out.println("Funcionário João removido com sucesso!");
+        System.out.println("Funcionário João removido com sucesso!\n");
     }
 
     public static void imprimirFuncionarios(List<Funcionario> funcionarios) {
@@ -69,8 +68,7 @@ public class Principal {
             System.out.println(funcionario);
         }
 
-        System.out.println("***FIM***");
-        System.out.println();
+        System.out.println("***FIM***\n");
     }
 
     public static void aumentarSalario(List<Funcionario> funcionarios) {
@@ -91,11 +89,13 @@ public class Principal {
                 System.out.println(funcionario);
             }
             System.out.println();
+
         }
+        System.out.println("***FIM***\n");
     }
 
     public static void imprimirAniversariantesMes10e12(List<Funcionario> funcionarios) {
-        System.out.println("\nAniversariantes de outubro ou dezembro:");
+        System.out.println("Aniversariantes de outubro ou dezembro:");
         for (Funcionario funcionario : funcionarios) {
             if (funcionario.getDataNascimento().getMonth().equals(Month.OCTOBER) || funcionario.getDataNascimento().getMonth().equals(Month.DECEMBER)) {
                 System.out.println(funcionario);
@@ -104,14 +104,23 @@ public class Principal {
     }
 
     public static void imprimirFuncionarioMaisVelho(List<Funcionario> funcionarios) {
-        Funcionario maisVelho = funcionarios.getFirst();
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            return;
+        }
+
+        // Não foi usado getFirst() por não saber se teste rodará na versão 21+ ou em uma mais antiga
+        Funcionario maisVelho = funcionarios.get(0);
         for (Funcionario funcionario : funcionarios) {
             if (funcionario.getDataNascimento().isBefore(maisVelho.getDataNascimento())) {
                 maisVelho = funcionario;
             }
         }
 
-        int idade = Period.between(maisVelho.getDataNascimento(), LocalDate.now(ZoneId.of("America/Sao_Paulo"))).getYears();
+        int idade = Period.between(
+                maisVelho.getDataNascimento(),
+                LocalDate.now(ZoneId.of("America/Sao_Paulo"))
+        ).getYears();
+
         System.out.println("\nFuncionário mais velho: " + maisVelho.getNome() + " | Idade: " + idade + "\n");
     }
 
@@ -121,22 +130,34 @@ public class Principal {
         for (Funcionario funcionario : funcionarios) {
             System.out.println(funcionario);
         }
+        System.out.println("***FIM***\n");
     }
 
-    public static void imprimirSalarioTotal(List<Funcionario> funcionarios){
+    public static void imprimirSalarioTotal(List<Funcionario> funcionarios) {
         BigDecimal salarioTotal = BigDecimal.ZERO;
         for (Funcionario funcionario : funcionarios) {
             salarioTotal = salarioTotal.add(funcionario.getSalario());
         }
-        System.out.println("\nA soma dos salários dos funcionários é: " + salarioTotal + "\n");
+
+        System.out.println("A soma dos salários dos funcionários é: R$ " + formatarNumero(salarioTotal) + "\n");
     }
 
-    public static void calcularSalariosMinimos(List<Funcionario> funcionarios){
+    public static void calcularSalariosMinimos(List<Funcionario> funcionarios) {
         BigDecimal salarioMinimo = new BigDecimal("1212.00");
         for (Funcionario funcionario : funcionarios) {
             BigDecimal quantidade = funcionario.getSalario()
                     .divide(salarioMinimo, 2, RoundingMode.HALF_UP);
-            System.out.println(funcionario.getNome() + ": " + quantidade + " salários mínimos");
+            System.out.println(funcionario.getNome() + ": " + formatarNumero(quantidade) + " salários mínimos");
         }
+        System.out.println("***FIM***\n");
+    }
+
+    private static String formatarNumero(BigDecimal valor) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.forLanguageTag("pt-BR"));
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+
+        java.text.DecimalFormat formatter = new DecimalFormat("#,##0.00", symbols);
+        return formatter.format(valor);
     }
 }
