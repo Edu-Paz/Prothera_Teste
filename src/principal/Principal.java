@@ -14,6 +14,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
+    private static final String LISTA_VAZIA = "Lista vazia.";
+    private static final String NOME_INVALIDO = "Nome inválido.";
+    private static final String FIM = "***FIM***";
+
     public static void main(String[] args) {
         List<Funcionario> funcionarios = new ArrayList<>();
 
@@ -58,45 +62,84 @@ public class Principal {
     }
 
     public static void removerFuncionario(List<Funcionario> funcionarios, String nome) {
-        funcionarios.removeIf(funcionario -> funcionario.getNome().equals(nome));
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
 
-        System.out.println("Funcionário João removido com sucesso!\n");
+        if (nome == null || nome.isBlank()) {
+            System.out.println(NOME_INVALIDO);
+            return;
+        }
+
+        funcionarios.removeIf(funcionario -> funcionario.getNome().equals(nome));
+        System.out.println("Funcionário " + nome + " removido com sucesso!\n");
     }
 
     public static void imprimirFuncionarios(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
+
         for (Funcionario funcionario : funcionarios) {
             System.out.println(funcionario);
         }
 
-        System.out.println("***FIM***\n");
+        System.out.println(FIM + "\n");
     }
 
     public static void aumentarSalario(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
+
         for (Funcionario funcionario : funcionarios) {
+            if (funcionario == null || funcionario.getSalario() == null) {
+                continue;
+            }
             funcionario.aumentarSalario(new BigDecimal("0.10"));
         }
     }
 
     public static Map<String, List<Funcionario>> agruparPorFuncao(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            return new HashMap<>();
+        }
+
         return funcionarios.stream()
                 .collect(Collectors.groupingBy(Funcionario::getFuncao));
     }
 
     public static void imprimirPorFuncao(Map<String, List<Funcionario>> grupos) {
+        if (grupos == null || grupos.isEmpty()) {
+            System.out.println("Nenhum funcionário para agrupar.");
+            return;
+        }
+
+        System.out.println("Funcionários separados por função:");
         for (Map.Entry<String, List<Funcionario>> entry : grupos.entrySet()) {
             System.out.println("Função: " + entry.getKey());
             for (Funcionario funcionario : entry.getValue()) {
                 System.out.println(funcionario);
             }
             System.out.println();
-
         }
-        System.out.println("***FIM***\n");
+        System.out.println(FIM + "\n");
     }
 
     public static void imprimirAniversariantesMes10e12(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
+
         System.out.println("Aniversariantes de outubro ou dezembro:");
         for (Funcionario funcionario : funcionarios) {
+            if (funcionario == null || funcionario.getDataNascimento() == null) {
+                continue;
+            }
             if (funcionario.getDataNascimento().getMonth().equals(Month.OCTOBER) || funcionario.getDataNascimento().getMonth().equals(Month.DECEMBER)) {
                 System.out.println(funcionario);
             }
@@ -105,12 +148,15 @@ public class Principal {
 
     public static void imprimirFuncionarioMaisVelho(List<Funcionario> funcionarios) {
         if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
             return;
         }
 
-        // Não foi usado getFirst() por não saber se teste rodará na versão 21+ ou em uma mais antiga
         Funcionario maisVelho = funcionarios.get(0);
         for (Funcionario funcionario : funcionarios) {
+            if (funcionario == null || funcionario.getDataNascimento() == null) {
+                continue;
+            }
             if (funcionario.getDataNascimento().isBefore(maisVelho.getDataNascimento())) {
                 maisVelho = funcionario;
             }
@@ -125,31 +171,52 @@ public class Principal {
     }
 
     public static void imprimirFuncionariosEmOrdemAlfabetica(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
+
         System.out.println("Lista de funcionários em ordem alfabética:");
         funcionarios.sort(Comparator.comparing(Funcionario::getNome));
         for (Funcionario funcionario : funcionarios) {
             System.out.println(funcionario);
         }
-        System.out.println("***FIM***\n");
+        System.out.println(FIM + "\n");
     }
 
     public static void imprimirSalarioTotal(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
+
         BigDecimal salarioTotal = BigDecimal.ZERO;
         for (Funcionario funcionario : funcionarios) {
-            salarioTotal = salarioTotal.add(funcionario.getSalario());
+            if (funcionario != null && funcionario.getSalario() != null) {
+                salarioTotal = salarioTotal.add(funcionario.getSalario());
+            }
         }
 
         System.out.println("A soma dos salários dos funcionários é: R$ " + formatarNumero(salarioTotal) + "\n");
     }
 
     public static void calcularSalariosMinimos(List<Funcionario> funcionarios) {
+        if (funcionarios == null || funcionarios.isEmpty()) {
+            System.out.println(LISTA_VAZIA);
+            return;
+        }
+
+        System.out.println("Lista de salários mínimos dos funcionários:");
         BigDecimal salarioMinimo = new BigDecimal("1212.00");
         for (Funcionario funcionario : funcionarios) {
+            if (funcionario == null || funcionario.getSalario() == null) {
+                continue;
+            }
             BigDecimal quantidade = funcionario.getSalario()
                     .divide(salarioMinimo, 2, RoundingMode.HALF_UP);
             System.out.println(funcionario.getNome() + ": " + formatarNumero(quantidade) + " salários mínimos");
         }
-        System.out.println("***FIM***\n");
+        System.out.println(FIM + "\n");
     }
 
     private static String formatarNumero(BigDecimal valor) {
