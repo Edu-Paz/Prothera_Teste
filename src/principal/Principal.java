@@ -224,7 +224,7 @@ public class Principal {
         symbols.setDecimalSeparator(',');
         symbols.setGroupingSeparator('.');
 
-        java.text.DecimalFormat formatter = new DecimalFormat("#,##0.00", symbols);
+        DecimalFormat formatter = new DecimalFormat("#,##0.00", symbols);
         return formatter.format(valor);
     }
 }
